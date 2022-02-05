@@ -185,7 +185,7 @@ func (memR *Reactor) Receive(chID byte, src p2p.Peer, msgBytes []byte) {
 		// TODO (Fox): Send Tx before check?
 		if err := memR.eventBus.PublishEventMempoolTx(
 			types.EventDataMempoolTx{
-				Tx: string(tx),
+				Tx: fmt.Sprintf("%v", tx),
 			},
 		); err != nil {
 			memR.Logger.Error("failed publishing mempool TX", "err", err)
