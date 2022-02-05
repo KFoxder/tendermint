@@ -185,6 +185,8 @@ func (memR *Reactor) Receive(chID byte, src p2p.Peer, msgBytes []byte) {
 			memR.Logger.Debug("Tx already exists in cache", "tx", txID(tx))
 		} else if err != nil {
 			memR.Logger.Info("Could not check tx", "tx", txID(tx), "err", err)
+		} else {
+			memR.Logger.Info("KFoxder: Tx for arb", "tx", txID(tx))
 		}
 	}
 	// broadcasting happens from go routines per peer
