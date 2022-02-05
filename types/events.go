@@ -90,8 +90,7 @@ type EventDataTx struct {
 }
 
 type EventDataMempoolTx struct {
-	Tx string `json:"tx"`
-	//Tx []byte `protobuf:"bytes,3,opt,name=tx,proto3" json:"tx,omitempty"`
+	abci.MempoolTxResult
 }
 
 // NOTE: This goes into the replay WAL

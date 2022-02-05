@@ -211,8 +211,8 @@ message ResponseCheckTx {
   int64          gas_used   = 6 [json_name = "gas_used"];
   repeated Event events     = 7
       [(gogoproto.nullable) = false, (gogoproto.jsontag) = "events,omitempty"];
-  string codespace = 8;
-  bool is_oracle_tx = 9 [(gogoproto.jsontag) = "is_oracle_tx,omitempty"]; // mempool logic
+  string codespace    = 8;
+  bool   is_oracle_tx = 9 [(gogoproto.jsontag) = "is_oracle_tx,omitempty"];  // mempool logic
 }
 
 message ResponseDeliverTx {
@@ -223,7 +223,7 @@ message ResponseDeliverTx {
   int64          gas_wanted = 5 [json_name = "gas_wanted"];
   int64          gas_used   = 6 [json_name = "gas_used"];
   repeated Event events     = 7
-      [(gogoproto.nullable) = false, (gogoproto.jsontag) = "events,omitempty"]; // nondeterministic
+      [(gogoproto.nullable) = false, (gogoproto.jsontag) = "events,omitempty"];  // nondeterministic
   string codespace = 8;
 }
 
@@ -328,6 +328,11 @@ message TxResult {
   uint32            index  = 2;
   bytes             tx     = 3;
   ResponseDeliverTx result = 4 [(gogoproto.nullable) = false];
+}
+
+// MempoolTxResult contains results of transaction in mempool.
+message MempoolTxResult {
+  bytes             tx     = 1;
 }
 
 //----------------------------------------

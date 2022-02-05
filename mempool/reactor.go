@@ -6,6 +6,7 @@ import (
 	"math"
 	"time"
 
+	abci "github.com/tendermint/tendermint/abci/types"
 	cfg "github.com/tendermint/tendermint/config"
 	"github.com/tendermint/tendermint/libs/clist"
 	"github.com/tendermint/tendermint/libs/log"
@@ -183,11 +184,9 @@ func (memR *Reactor) Receive(chID byte, src p2p.Peer, msgBytes []byte) {
 	}
 	for _, tx := range msg.Txs {
 		// TODO (Fox): Send Tx before check?
-		if err := memR.eventBus.PublishEventMempoolTx(
-			types.EventDataMempoolTx{
-				Tx: fmt.Sprintf("%v", tx),
-			},
-		); err != nil {
+		if err := memR.eventBus.PublishEventMempoolTx(types.EventDataMempoolTx{MempoolTxResult: abci.MempoolTxResult{
+			Tx: tx,
+		}}); err != nil {
 			memR.Logger.Error("failed publishing mempool TX", "err", err)
 		}
 		err = memR.mempool.CheckTx(tx, nil, txInfo)
@@ -195,8 +194,6 @@ func (memR *Reactor) Receive(chID byte, src p2p.Peer, msgBytes []byte) {
 			memR.Logger.Debug("Tx already exists in cache", "tx", txID(tx))
 		} else if err != nil {
 			memR.Logger.Info("Could not check tx", "tx", txID(tx), "err", err)
-		} else {
-			memR.Logger.Info("KFoxder: Tx for arb", "tx", tx)
 		}
 	}
 	// broadcasting happens from go routines per peer
