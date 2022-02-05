@@ -183,18 +183,19 @@ func (memR *Reactor) Receive(chID byte, src p2p.Peer, msgBytes []byte) {
 		txInfo.SenderP2PID = src.ID()
 	}
 	for _, tx := range msg.Txs {
-		// TODO (Fox): Send Tx before check?
-		if err := memR.eventBus.PublishEventMempoolTx(types.EventDataMempoolTx{MempoolTxResult: abci.MempoolTxResult{
-			Tx: tx,
-		}}); err != nil {
-			memR.Logger.Error("failed publishing mempool TX", "err", err)
-		}
 		err = memR.mempool.CheckTx(tx, nil, txInfo)
 		if err == ErrTxInCache {
 			memR.Logger.Debug("Tx already exists in cache", "tx", txID(tx))
 		} else if err != nil {
 			memR.Logger.Info("Could not check tx", "tx", txID(tx), "err", err)
+		} else {
+			if pubErr := memR.eventBus.PublishEventMempoolTx(types.EventDataMempoolTx{MempoolTxResult: abci.MempoolTxResult{
+				Tx: tx,
+			}}); pubErr != nil {
+				memR.Logger.Error("failed publishing mempool TX", "err", pubErr)
+			}
 		}
+
 	}
 	// broadcasting happens from go routines per peer
 }
