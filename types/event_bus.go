@@ -187,6 +187,10 @@ func (b *EventBus) PublishEventTx(data EventDataTx) error {
 	return b.pubsub.PublishWithEvents(ctx, data, events)
 }
 
+func (b *EventBus) PublishEventMempoolTx(data EventDataMempoolTx) error {
+	return b.Publish(EventMempoolTx, data)
+}
+
 func (b *EventBus) PublishEventNewRoundStep(data EventDataRoundState) error {
 	return b.Publish(EventNewRoundStep, data)
 }
@@ -264,6 +268,10 @@ func (NopEventBus) PublishEventVote(data EventDataVote) error {
 }
 
 func (NopEventBus) PublishEventTx(data EventDataTx) error {
+	return nil
+}
+
+func (NopEventBus) PublishEventMempoolTx(data EventDataMempoolTx) error {
 	return nil
 }
 

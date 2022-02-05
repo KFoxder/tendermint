@@ -99,6 +99,8 @@ func (req RPCRequest) String() string {
 }
 
 func MapToRequest(id jsonrpcid, method string, params map[string]interface{}) (RPCRequest, error) {
+
+	// TODO (Fox): Path
 	var paramsMap = make(map[string]json.RawMessage, len(params))
 	for name, value := range params {
 		valueJSON, err := tmjson.Marshal(value)

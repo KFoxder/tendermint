@@ -20,6 +20,7 @@ const (
 	EventNewBlockHeader      = "NewBlockHeader"
 	EventNewEvidence         = "NewEvidence"
 	EventTx                  = "Tx"
+	EventMempoolTx           = "MempoolTx"
 	EventValidatorSetUpdates = "ValidatorSetUpdates"
 
 	// Internal consensus events.
@@ -50,6 +51,7 @@ func init() {
 	tmjson.RegisterType(EventDataNewBlockHeader{}, "tendermint/event/NewBlockHeader")
 	tmjson.RegisterType(EventDataNewEvidence{}, "tendermint/event/NewEvidence")
 	tmjson.RegisterType(EventDataTx{}, "tendermint/event/Tx")
+	tmjson.RegisterType(EventDataMempoolTx{}, "tendermint/event/MempoolTx")
 	tmjson.RegisterType(EventDataRoundState{}, "tendermint/event/RoundState")
 	tmjson.RegisterType(EventDataNewRound{}, "tendermint/event/NewRound")
 	tmjson.RegisterType(EventDataCompleteProposal{}, "tendermint/event/CompleteProposal")
@@ -85,6 +87,11 @@ type EventDataNewEvidence struct {
 // All txs fire EventDataTx
 type EventDataTx struct {
 	abci.TxResult
+}
+
+type EventDataMempoolTx struct {
+	Tx string `json:"tx"`
+	//Tx []byte `protobuf:"bytes,3,opt,name=tx,proto3" json:"tx,omitempty"`
 }
 
 // NOTE: This goes into the replay WAL
@@ -155,6 +162,7 @@ var (
 	EventQueryTimeoutPropose      = QueryForEvent(EventTimeoutPropose)
 	EventQueryTimeoutWait         = QueryForEvent(EventTimeoutWait)
 	EventQueryTx                  = QueryForEvent(EventTx)
+	EventQueryMempoolTx           = QueryForEvent(EventMempoolTx)
 	EventQueryUnlock              = QueryForEvent(EventUnlock)
 	EventQueryValidatorSetUpdates = QueryForEvent(EventValidatorSetUpdates)
 	EventQueryValidBlock          = QueryForEvent(EventValidBlock)
@@ -175,6 +183,7 @@ type BlockEventPublisher interface {
 	PublishEventNewBlockHeader(header EventDataNewBlockHeader) error
 	PublishEventNewEvidence(evidence EventDataNewEvidence) error
 	PublishEventTx(EventDataTx) error
+	PublishEventMempoolTx(EventDataMempoolTx) error
 	PublishEventValidatorSetUpdates(EventDataValidatorSetUpdates) error
 }
 
