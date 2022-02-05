@@ -189,6 +189,7 @@ func (memR *Reactor) Receive(chID byte, src p2p.Peer, msgBytes []byte) {
 		} else if err != nil {
 			memR.Logger.Info("Could not check tx", "tx", txID(tx), "err", err)
 		} else {
+			memR.Logger.Info("New tx", "tx", txID(tx))
 			if pubErr := memR.eventBus.PublishEventMempoolTx(types.EventDataMempoolTx{MempoolTxResult: abci.MempoolTxResult{
 				Tx: tx,
 			}}); pubErr != nil {
