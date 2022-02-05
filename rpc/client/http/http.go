@@ -630,6 +630,7 @@ func (w *WSEvents) OnStop() {
 func (w *WSEvents) Subscribe(ctx context.Context, subscriber, query string,
 	outCapacity ...int) (out <-chan ctypes.ResultEvent, err error) {
 
+	// TODO (Fox): Path
 	if !w.IsRunning() {
 		return nil, errNotRunning
 	}
@@ -647,6 +648,8 @@ func (w *WSEvents) Subscribe(ctx context.Context, subscriber, query string,
 	w.mtx.Lock()
 	// subscriber param is ignored because Tendermint will override it with
 	// remote IP anyway.
+
+	// TODO (Fox): This is where our new custom query will go.
 	w.subscriptions[query] = outc
 	w.mtx.Unlock()
 

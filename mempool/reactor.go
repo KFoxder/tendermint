@@ -32,9 +32,10 @@ const (
 // peers you received it from.
 type Reactor struct {
 	p2p.BaseReactor
-	config  *cfg.MempoolConfig
-	mempool *CListMempool
-	ids     *mempoolIDs
+	config   *cfg.MempoolConfig
+	mempool  *CListMempool
+	ids      *mempoolIDs
+	eventBus types.BlockEventPublisher
 }
 
 type mempoolIDs struct {
@@ -101,11 +102,12 @@ func newMempoolIDs() *mempoolIDs {
 }
 
 // NewReactor returns a new Reactor with the given config and mempool.
-func NewReactor(config *cfg.MempoolConfig, mempool *CListMempool) *Reactor {
+func NewReactor(config *cfg.MempoolConfig, mempool *CListMempool, eventBus types.BlockEventPublisher) *Reactor {
 	memR := &Reactor{
-		config:  config,
-		mempool: mempool,
-		ids:     newMempoolIDs(),
+		config:   config,
+		mempool:  mempool,
+		ids:      newMempoolIDs(),
+		eventBus: eventBus,
 	}
 	memR.BaseReactor = *p2p.NewBaseReactor("Mempool", memR)
 	return memR
@@ -180,12 +182,21 @@ func (memR *Reactor) Receive(chID byte, src p2p.Peer, msgBytes []byte) {
 		txInfo.SenderP2PID = src.ID()
 	}
 	for _, tx := range msg.Txs {
+		// TODO (Fox): Send Tx before check?
+		if err := memR.eventBus.PublishEventMempoolTx(
+			types.EventDataMempoolTx{
+				Tx: "KFoxder",
+			},
+		); err != nil {
+			memR.Logger.Error("failed publishing mempool TX", "err", err)
+		}
 		err = memR.mempool.CheckTx(tx, nil, txInfo)
 		if err == ErrTxInCache {
 			memR.Logger.Debug("Tx already exists in cache", "tx", txID(tx))
 		} else if err != nil {
 			memR.Logger.Info("Could not check tx", "tx", txID(tx), "err", err)
 		} else {
+			// TODO (Fox): Special Log
 			memR.Logger.Info("KFoxder: Tx for arb", "tx", tx)
 		}
 	}

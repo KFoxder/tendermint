@@ -24,4 +24,8 @@ func TestQueryForEvent(t *testing.T) {
 		"tm.event='NewEvidence'",
 		QueryForEvent(EventNewEvidence).String(),
 	)
+	assert.Equal(t,
+		"tm.event='MempoolTx'",
+		QueryForEvent(EventMempoolTx).String(),
+	)
 }

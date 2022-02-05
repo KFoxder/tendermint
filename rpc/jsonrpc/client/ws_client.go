@@ -231,6 +231,7 @@ func (c *WSClient) Send(ctx context.Context, request types.RPCRequest) error {
 
 // Call enqueues a call request onto the Send queue. Requests are JSON encoded.
 func (c *WSClient) Call(ctx context.Context, method string, params map[string]interface{}) error {
+	// TODO (Fox): Path
 	request, err := types.MapToRequest(c.nextRequestID(), method, params)
 	if err != nil {
 		return err
@@ -525,6 +526,8 @@ func (c *WSClient) readRoutine() {
 // Subscribe to a query. Note the server must have a "subscribe" route
 // defined.
 func (c *WSClient) Subscribe(ctx context.Context, query string) error {
+
+	// TODO (Fox): Path to sub
 	params := map[string]interface{}{"query": query}
 	return c.Call(ctx, "subscribe", params)
 }

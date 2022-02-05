@@ -568,6 +568,9 @@ func (c *Client) RegisterOpDecoder(typ string, dec merkle.OpDecoder) {
 // a subscriber, but does not verify responses (UNSAFE)!
 // TODO: verify data
 func (c *Client) SubscribeWS(ctx *rpctypes.Context, query string) (*ctypes.ResultSubscribe, error) {
+
+	// TODO: This is where subscription of mempool tx will happen.
+	// types.QueryForEvent(types.EventNewBlock).String()
 	out, err := c.next.Subscribe(context.Background(), ctx.RemoteAddr(), query)
 	if err != nil {
 		return nil, err
